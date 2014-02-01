@@ -60,7 +60,7 @@ def read_input(input):
     
     lines.remove(str(lines[0]))         #remove first line of attribute names
     lines = [x for x in lines if x]     #filter bad characters
-	
+
     itemlen = len(lines[0].split('\t')) - 1  
     for attrvar in range(itemlen):
         attrlist.append("attr"+`attrvar+1`)
@@ -185,7 +185,7 @@ def grow_tree(iteminstances,orig_iteminstances,attrList,classitems,level):
  # using Hash map dictionary data structure to store each level as nodes with attribute value as key and its 
  # instances as values
  
- dictNode = {attrValue:{}}
+ dictNode = {attrValue:{}}     # hash created with attribute value as key and will store each of the levels as values
  del(attrList[attr_num_selected])
  
  for item in orig_iteminstances:
@@ -211,32 +211,36 @@ def grow_tree(iteminstances,orig_iteminstances,attrList,classitems,level):
 
         # classification on each item
 def classifier(DTree,attributes,iteminstance,classitems):
- i=1
- root = DTree.keys()[0]
- clAssigned =0
- # Feature index of attribute selected at first level
+
+ keylength=1
+ checkClass = False
+ root = DTree.keys()[0]     #get top item in the tree passed.
+ 
+ # attribute index of the top node.
  itemnum = attributes.index(root)
- # Traversing down the tree recursively
- k= DTree[root].keys()
+ 
+ key= DTree[root].keys()
  
  # For keys at the next level if a match is found process further
  for key in DTree[root].keys():
   if iteminstance[itemnum] == key:
-    clAssigned = 1
- # If key type is dictionary it means next level is not a leaf node, so process recursively.
-    if type(DTree[root][key]).__name__=='dict':
+    checkClass = True
+    #if not leaf node continue traversal else get the label.
+    if type(DTree[root][key]).__name__!='str':
      classLabel = classifier(DTree[root][key],attributes,iteminstance,classitems)
     else:
- # At leaf level assign the class label
      classLabel = DTree[root][key]
-  elif i == len(k) and clAssigned == 0:
+  
+  elif keylength == len(key) and checkClass == False:
    classLabel = retBiggerClass(classitems)
    if classLabel == -1:
     classLabel = '1'       # if returned class label is -1 i.e no bigger class is found , returning 1 randomly for this binary classification.
-  i+=1
+  
+  keylength+=1
+
  return classLabel
 
-def calcAccuracy(predicted,actual):
+def findaccuracy(predicted,actual):
     accCount=0
     for i in range(len(actual)):
         if predicted[i] == actual[i]:
@@ -248,7 +252,7 @@ def main():
 
 
     
-    trainfile = open(r'train-3.dat')
+    trainfile = open(r'train-curve150.dat')
     testfile = open(r'test-3.dat')
 
     original_train = []
@@ -275,11 +279,13 @@ def main():
      original_train.append(item[-1])
     trainattr = train_attrnames[:]
     classitems = [item[-1] for item in train_items]
+
     # Generating list of predicted class values using classifier function.
     for item in train_items:
-     featVec = item[:-1]
-     predict_train.append(classifier(id3tree,trainattr,featVec,classitems))
-    accCount = calcAccuracy(predict_train,original_train)
+     iteminstances = item[:-1]
+     predict_train.append(classifier(id3tree,trainattr,iteminstances,classitems))
+
+    accCount = findaccuracy(predict_train,original_train)
 
     print '\nAccuracy on training set '+ '(' + str(len(original_train)) + ' instances): ' + str(float(accCount)*100/float(len(original_train))) +' %'
     # Actual class label
@@ -289,9 +295,9 @@ def main():
     classitems = [item[-1] for item in train_items]
     # Generating list of predicted class values using classifier function.
     for item in test_items:
-     featVec = item[:-1]
-     predict_test.append(classifier(id3tree,testattr,featVec,classitems))
-    accCount = calcAccuracy(predict_test,original_test)
+     iteminstances = item[:-1]
+     predict_test.append(classifier(id3tree,testattr,iteminstances,classitems))
+    accCount = findaccuracy(predict_test,original_test)
 
     print 'Accuracy on test set '+ '(' + str(len(original_test)) + ' instances): ' + str(float(accCount)*100/float(len(original_test))) +' %'
 
