@@ -12,6 +12,14 @@
     <OutputPath>.</OutputPath>
     <Name>Id3BinaryClassification</Name>
     <RootNamespace>Id3BinaryClassification</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <CommandLineArguments>train.dat test.dat</CommandLineArguments>
+    <InterpreterPath />
+    <InterpreterArguments>
+    </InterpreterArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <DebugStdLib>False</DebugStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
