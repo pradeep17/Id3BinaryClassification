@@ -14,7 +14,7 @@
     <RootNamespace>Id3BinaryClassification</RootNamespace>
     <IsWindowsApplication>False</IsWindowsApplication>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>train.dat test.dat</CommandLineArguments>
+    <CommandLineArguments>train-1.dat test-1.dat</CommandLineArguments>
     <InterpreterPath />
     <InterpreterArguments>
     </InterpreterArguments>

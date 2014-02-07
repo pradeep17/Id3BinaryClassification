@@ -57,6 +57,7 @@ import operator
 from sys import stdout
 from math import log
 
+#Reads the given file line by line and removes bad characters. Parses read values for training and testing instances 
 def read_input(input):
     
     
@@ -77,6 +78,7 @@ def read_input(input):
     
     return itemlist,attrlist
 
+	#Determines entropy of the given attribute instance set based on class labels.  
 def find_entropy(iteminstances):
   
  classlblcnt = [0,0]          #1st index represents count of class label '0' and 2nd corresponds to
@@ -91,7 +93,7 @@ def find_entropy(iteminstances):
    
  result = 0.0
  
- for items in range(1):
+ for items in range(2):
   if len(iteminstances) != 0 and classlblcnt[items] != 0:   
    result -= (float(classlblcnt[items]) / len(iteminstances)) * log((float(classlblcnt[items]) / len(iteminstances)),2)
   else:
@@ -102,6 +104,7 @@ def find_entropy(iteminstances):
   # Splitting at the current level by using corresponding attribute.
   # Function splits by taking values till the Attribute index and from
   # extending from next value to the current attribute
+ 
 def levelsplitter(instances,i, attrnum):
  splitinstances = []
  for item in instances:
@@ -111,7 +114,7 @@ def levelsplitter(instances,i, attrnum):
     splitinstances.append(temp)
  return splitinstances
 
-
+# Finds the larger of the class labels of the instances
 def retBiggerClass(cls_list):
  
  count0 = 0
@@ -134,6 +137,8 @@ def retBiggerClass(cls_list):
   
  return maxcount
  
+ 
+ #grows decission tree (hash data structure) recursively and attribute at each level is determined by the one that has highest information gain. 
 def grow_tree(iteminstances,orig_iteminstances,attrList,classitems,level):
  
  
@@ -260,6 +265,7 @@ def classifier(DTree,attributes,iteminstance,classitems):
 
  return classLabel
 
+ # Finds the accuracy of the predicted class labels based on the count of class labels in the given test and training files    
 def findaccuracy(classified,original):
     num_match = 0
 
@@ -268,19 +274,20 @@ def findaccuracy(classified,original):
          num_match += 1
     return num_match
 
+	# main function gets in train data file and test data file as input arguments. If more arguments are given, it throws an error.
+	# parses the two files to read and store. Trains the data set and finds accuracy with the training data set.
+	# predicts and classifies test data set based on trained decision tree and finds accurance of test data and prints the values.
 
 def main():
 
-
+    if len(sys.argv) > 3 or len(sys.argv) <= 2:
+        print "Invalid number of arguments given. Exactly two input arguments are allowed. Exitting.."
+        sys.exit(1)
     
-    #trainfile = open(r'train.dat')
-    #testfile = open(r'test.dat')
+    #trainfile = open('train.dat')
+    #testfile = open('test.dat')
     trainfile = open(sys.argv[1])
     testfile = open(sys.argv[2])
-
-    if len(sys.argv) > 3:
-        print "Invalid number of arguments given. Only two arguments are allowed. Exitting.."
-        sys.exit(1)
 
     original_train = []
     original_test = []
@@ -288,10 +295,6 @@ def main():
     predict_test = []
 
     classitems = []
-
-
-
-
 
     # Formating the train and text documents in the form of lists for
     # processing in the algorithm
@@ -319,10 +322,7 @@ def main():
 	 
     print '\nAccuracy on training set ' + '(' + str(len(original_train)) + ' instances): ' + str(float(findaccuracy(predict_train,original_train)) * 100 / float(len(original_train))) + ' %'
 
-
-    # Actual class label
-
-
+	#get class labels from test data file for accuracy calculation.
     for item in test_items:
 	    original_test.append(item[-1])
 
